@@ -90,7 +90,7 @@ class Smartphone(Product):
     diagonal = models.CharField(max_length=255, verbose_name='Диагональ')
     display_type = models.CharField(max_length=255, verbose_name='Тип матрицы')
     resolution = models.CharField(max_length=255, verbose_name='Разрешение экрана')
-    accum_volume = models.CharField(max_length=255, verbose_name='Заряд аккумулятора')
+    saccum_volume = models.CharField(max_length=255, verbose_name='Заряд аккумулятора')
     ram = models.CharField(max_length=255, verbose_name='Оперативная память')
     sd = models.BooleanField(default=True)
     sd_max = models.CharField(max_length=255, verbose_name='Максимальный обьем встроенной памяти')
