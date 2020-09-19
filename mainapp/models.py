@@ -41,12 +41,25 @@ class LatestProductsManager:
 
 
 class LatestProducts:
+
     objects = LatestProductsManager()
 
 
+class CategoryManager(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def get_categories_for_left_sidebar(self):
+        qs = self.get_queryset().annotate(models.Count('notebook'))
+        print(qs)
+
+
 class Category(models.Model):
+
     name = models.CharField(max_length=255, verbose_name='Имя категории')
     slug = models.SlugField(unique=True)
+    objects = CategoryManager()
 
     def __str__(self):
         return self.name
@@ -72,6 +85,7 @@ class Product(models.Model):
 
 
 class NoteBook(Product):
+
     diagonal = models.CharField(max_length=255, verbose_name='Диагональ')
     display_type = models.CharField(max_length=255, verbose_name='Тип матрицы')
     processor_freq = models.CharField(max_length=255, verbose_name='Процессор')
@@ -87,13 +101,14 @@ class NoteBook(Product):
 
 
 class Smartphone(Product):
+
     diagonal = models.CharField(max_length=255, verbose_name='Диагональ')
     display_type = models.CharField(max_length=255, verbose_name='Тип матрицы')
     resolution = models.CharField(max_length=255, verbose_name='Разрешение экрана')
-    saccum_volume = models.CharField(max_length=255, verbose_name='Заряд аккумулятора')
+    accum_volume = models.CharField(max_length=255, verbose_name='Объем батареи')
     ram = models.CharField(max_length=255, verbose_name='Оперативная память')
-    sd = models.BooleanField(default=True)
-    sd_max = models.CharField(max_length=255, verbose_name='Максимальный обьем встроенной памяти')
+    sd = models.BooleanField(default=True, verbose_name='Наличие SD карты')
+    sd_max = models.CharField(max_length=255, null=True, verbose_name='Максимальный обьем встроенной памяти')
     main_cam_mp = models.CharField(max_length=255, verbose_name='Главная камера')
     frontal_cam_mp = models.CharField(max_length=255, verbose_name='Фронтальная камера')
 
@@ -105,6 +120,7 @@ class Smartphone(Product):
 
 
 class CartProduct(models.Model):
+
     user = models.ForeignKey('Customer', verbose_name='Покупатель', on_delete=models.CASCADE)
     cart = models.ForeignKey('Cart', verbose_name='Корзина', on_delete=models.CASCADE, related_name='related_products')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -114,14 +130,17 @@ class CartProduct(models.Model):
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена')
 
     def __str__(self):
-        return 'Продукт: {} (для корзины)'.format(self.product.title)
+        return 'Продукт: {} (для корзины)'.format(self.content_object.title)
 
 
 class Cart(models.Model):
+
     owner = models.ForeignKey('Customer', verbose_name='Владелец', on_delete=models.CASCADE)
     products = models.ManyToManyField(CartProduct, blank=True, related_name='related_cart')
     total_products = models.PositiveIntegerField(default=0)
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена')
+    in_order = models.BooleanField(default=False)
+    for_anonymous_user = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)

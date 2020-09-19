@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.views.generic import DetailView
 
-from .models import Smartphone, NoteBook
+from .models import Smartphone, NoteBook, Category
 
 
 def test_view(request):
+    print(Category.objects.get_categories_for_left_sidebar())
     return render(request, 'base.html', {})
 
 
