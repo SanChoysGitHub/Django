@@ -5,8 +5,8 @@ from .models import Smartphone, NoteBook, Category
 
 
 def test_view(request):
-    print(Category.objects.get_categories_for_left_sidebar())
-    return render(request, 'base.html', {})
+    categories = Category.objects.get_categories_for_left_sidebar()
+    return render(request, 'base.html', {'categories': categories})
 
 
 class ProductDetailView(DetailView):
@@ -22,4 +22,13 @@ class ProductDetailView(DetailView):
 
     context_object_name = 'product'
     template_name = 'product_detail.html'
+    slug_url_kwarg = 'slug'
+
+
+class CategoryDetailView(DetailView):
+
+    model = Category
+    queryset = Category.objects.all()
+    context_object_name = 'category'
+    template_name = 'category_detail.html'
     slug_url_kwarg = 'slug'
