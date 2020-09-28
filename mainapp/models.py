@@ -30,7 +30,7 @@ class LatestProductsManager:
     def get_products_for_main_page(*args, **kwargs):
         with_respect_to = kwargs.get('with_respect_to')
         products = []
-        ct_models = ContentType.objects.filter(model_in=args)
+        ct_models = ContentType.objects.filter(model=args)
         for ct_model in ct_models:
             model_products = ct_model.model_class()._base_manager.all().order_by('-id')[:5]
             products.extend(model_products)
