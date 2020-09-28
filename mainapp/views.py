@@ -1,20 +1,15 @@
 from django.shortcuts import render
 from django.views.generic import DetailView, View
 
-from .models import Smartphone, NoteBook, Category, LatestProducts
+from .models import Smartphone, NoteBook, Category
 from .mixins import CategoryDetailMixin
 
 
 class BaseView(View):
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         categories = Category.objects.get_categories_for_left_sidebar()
-        products = LatestProducts.objects.get_products_for_main_page('notebook', 'smartphone')
-        context = {
-            'categories': categories,
-            'products': products
-        }
-        return render(request, 'base.html', context)
+        return render(request, 'base.html', {'categories': categories})
 
 
 class ProductDetailView(CategoryDetailMixin, DetailView):
